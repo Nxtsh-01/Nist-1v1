@@ -3,112 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIST 1v1 - C Battle</title>
+    <title>NIST 1v1 | Code Battle Arena</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Ye Design Wala Part Hai (CSS) - Isko mat chedhna */
-        body { background-color: #121212; color: #00ff41; font-family: 'Courier New', monospace; text-align: center; padding: 50px; }
-        .box { border: 2px solid #00ff41; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 15px #00ff41; }
-        .btn { background: #00ff41; color: black; padding: 10px 20px; border: none; font-weight: bold; cursor: pointer; margin: 5px; font-size: 16px; }
-        .btn:hover { background: white; }
+        /* --- PROFESSIONAL CSS VARIABLES --- */
+        :root {
+            --bg-dark: #0f0c29;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-blue: #00f2ff;
+            --neon-purple: #bd00ff;
+            --text-main: #ffffff;
+            --text-dim: #b3b3b3;
+            --code-bg: #1e1e1e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* --- THE GLASS CARD CONTAINER --- */
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
+            position: relative;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p { color: var(--text-dim); margin-bottom: 25px; }
+
+        /* --- BUTTONS WITH GLOW EFFECT --- */
+        .btn {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+            width: 100%;
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(189, 0, 255, 0.6);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            box-shadow: none;
+        }
+        .btn-outline:hover { background: rgba(0, 242, 255, 0.1); }
+
+        /* --- CODE EDITOR LOOK --- */
+        .code-box {
+            background: var(--code-bg);
+            border-left: 4px solid var(--neon-purple);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #d4d4d4;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            overflow-x: auto;
+        }
+
+        .keyword { color: #569cd6; } /* Blue for int, void */
+        .string { color: #ce9178; }  /* Orange for strings */
+        .function { color: #dcdcaa; } /* Yellow for functions */
+
+        /* --- INPUT FIELD --- */
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        input:focus { border-color: var(--neon-blue); }
+
+        /* --- UTILS --- */
         .hidden { display: none; }
-        #timer { font-size: 24px; color: red; font-weight: bold; }
+        .badge {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        #timer { font-size: 1.5rem; font-weight: bold; color: var(--neon-blue); }
+        .score-board { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <h1>NIST 1v1: Code Battle</h1>
-    
-    <div id="login-screen" class="box">
-        <h3>Enter Player Name:</h3>
-        <input type="text" id="username" placeholder="Tera Naam..." style="padding:10px;">
-        <br><br>
-        <button class="btn" onclick="startGame()">START GAME</button>
-    </div>
+    <div class="container">
+        <div class="score-board">
+            <span>NIST 1v1</span>
+            <span id="score-display">Score: 0</span>
+        </div>
 
-    <div id="game-screen" class="box hidden">
-        <p>Time Left: <span id="timer">10</span>s</p>
-        <h2 id="question-text">Question aayega yaha</h2>
-        <div id="options-container">
+        <div id="home-screen">
+            <h1>Code Battle</h1>
+            <p>Prove your C/C++ skills. Beat the timer.</p>
+            
+            <button class="btn" onclick="startMode('coding')">🚀 Start Output Challenge</button>
+            <button class="btn btn-outline" onclick="startMode('mcq')">📝 Theory MCQ Mode</button>
+        </div>
+
+        <div id="game-screen" class="hidden">
+            <div class="badge">Time Left: <span id="timer">0</span>s</div>
+            
+            <h3 id="question-text" style="margin-bottom:15px;">Loading...</h3>
+            
+            <div id="code-block-container" class="hidden">
+                <div class="code-box" id="code-snippet">// Code loads here...</div>
             </div>
-    </div>
 
-    <div id="result-screen" class="box hidden">
-        <h2>Game Over!</h2>
-        <p>Tera Score: <span id="final-score">0</span></p>
-        <button class="btn" onclick="location.reload()">Play Again</button>
+            <div id="mcq-options" class="hidden"></div>
+
+            <div id="coding-input" class="hidden">
+                <input type="text" id="user-output" placeholder="Type output (e.g. 10)" autocomplete="off">
+                <button class="btn" onclick="checkCodingAnswer()">Submit Output</button>
+            </div>
+            
+            <p id="status-msg" style="height: 20px; font-size: 0.9rem;"></p>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h1>Game Over</h1>
+            <p>Your Final Score</p>
+            <h2 style="font-size: 4rem; color: var(--neon-blue); margin: 0;">
+                <span id="final-score">0</span>
+            </h2>
+            <p id="feedback-msg" style="margin-top: 20px;">Well Played!</p>
+            <br>
+            <button class="btn" onclick="location.reload()">Replay Match ↺</button>
+        </div>
     </div>
 
     <script>
-        // --- YE HAI LOGIC PART (Bilkul C Jaisa) ---
-        
-        // C: int score = 0;
-        let score = 0;
-        let currentQuestion = 0;
-        let timer = 10;
-        let interval;
+        // --- GAME LOGIC (SAME AS BEFORE, JUST UI CONNECTED) ---
 
-        // Yahan apne questions daal (Format same rakhna)
-        const questions = [
-            {
-                q: "int x=5; printf('%d', x++); Output kya hoga?",
-                options: ["5", "6", "Garbage Value", "Error"],
-                answer: 0 // 0 matlab pehla option (5) sahi hai
-            },
-            {
-                q: "C language kisne banayi?",
-                options: ["Bjarne Stroustrup", "Dennis Ritchie", "Guido van Rossum", "James Gosling"],
-                answer: 1 // 1 matlab dusra option sahi hai
-            },
-            {
-                q: "int a=10; if(a=5) printf('Hi'); else printf('Bye');",
-                options: ["Hi", "Bye", "Error", "10"],
-                answer: 0 // Assignment operator returns true
-            }
+        let currentMode = '';
+        let score = 0;
+        let qIndex = 0;
+        let timerVal = 0;
+        let interval;
+        let gameQuestions = [];
+
+        // Updated Data with simple syntax highlighting classes in mind
+        const mcqData = [
+            { q: "What data structure uses LIFO?", options: ["Queue", "Stack", "Array", "Tree"], ans: 1, time: 10 },
+            { q: "Time complexity to access Array index?", options: ["O(1)", "O(n)", "O(log n)", "O(n^2)"], ans: 0, time: 8 },
+            { q: "Which is NOT a valid variable name?", options: ["_var", "var1", "1var", "VAR"], ans: 2, time: 10 },
+            { q: "Value of NULL pointer in C?", options: ["0", "1", "-1", "Garbage"], ans: 0, time: 8 },
+            { q: "Which operator is used for Struct pointer?", options: [".", "->", "&", "*"], ans: 1, time: 10 }
         ];
 
-        function startGame() {
-            // Screen change kar raha hu
-            document.getElementById("login-screen").classList.add("hidden");
+        const codingData = [
+            { q: "Predict the Output:", code: "int main() {\n  int x = 5;\n  printf(\"%d\", x++);\n}", ans: "5", time: 15 },
+            { q: "What will print?", code: "int x = 10;\nif(x = 5) printf(\"Hi\");\nelse printf(\"Bye\");", ans: "Hi", time: 20 },
+            { q: "Loop Execution Count:", code: "for(int i=0; i<5; i+=2) {\n  printf(\"%d \", i);\n}", ans: "0 2 4", time: 25 },
+            { q: "Pointer Output:", code: "int a[]={1,2,3};\nint *p = a;\nprintf(\"%d\", *(p+2));", ans: "3", time: 20 },
+            { q: "Char Arithmetic:", code: "char c = 'A' + 1;\nprintf(\"%c\", c);", ans: "B", time: 10 }
+        ];
+
+        function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+
+        function startMode(mode) {
+            currentMode = mode;
+            document.getElementById("home-screen").classList.add("hidden");
             document.getElementById("game-screen").classList.remove("hidden");
+            gameQuestions = shuffle([...(mode === 'mcq' ? mcqData : codingData)]).slice(0, 5);
             loadQuestion();
         }
 
         function loadQuestion() {
-            if (currentQuestion >= questions.length) {
-                endGame();
-                return;
-            }
+            if (qIndex >= gameQuestions.length) { endGame(); return; }
+            let data = gameQuestions[qIndex];
             
-            // Timer reset
-            timer = 10;
-            document.getElementById("timer").innerText = timer;
+            document.getElementById("question-text").innerText = data.q;
+            document.getElementById("status-msg").innerText = ""; 
+            timerVal = data.time;
+            document.getElementById("timer").innerText = timerVal;
+            
             clearInterval(interval);
             interval = setInterval(() => {
-                timer--;
-                document.getElementById("timer").innerText = timer;
-                if(timer <= 0) nextQuestion(false);
+                timerVal--;
+                document.getElementById("timer").innerText = timerVal;
+                if(timerVal <= 0) { showFeedback(false, "Time's Up!"); setTimeout(nextQuestion, 1000); }
             }, 1000);
 
-            // Question show kar raha hu
-            let q = questions[currentQuestion];
-            document.getElementById("question-text").innerText = q.q;
-            
-            let optionsHtml = "";
-            for(let i=0; i<q.options.length; i++) {
-                optionsHtml += `<button class='btn' onclick='checkAnswer(${i})'>${q.options[i]}</button><br>`;
+            if (currentMode === 'mcq') {
+                document.getElementById("mcq-options").classList.remove("hidden");
+                document.getElementById("coding-input").classList.add("hidden");
+                document.getElementById("code-block-container").classList.add("hidden");
+                let html = "";
+                data.options.forEach((opt, idx) => {
+                    html += `<button class='btn btn-outline' onclick='checkMCQ(${idx})'>${opt}</button>`;
+                });
+                document.getElementById("mcq-options").innerHTML = html;
+            } else {
+                document.getElementById("mcq-options").classList.add("hidden");
+                document.getElementById("coding-input").classList.remove("hidden");
+                document.getElementById("code-block-container").classList.remove("hidden");
+                document.getElementById("code-snippet").innerText = data.code;
+                document.getElementById("user-output").value = "";
+                document.getElementById("user-output").focus();
             }
-            document.getElementById("options-container").innerHTML = optionsHtml;
         }
 
-        function checkAnswer(selectedOption) {
-            if (selectedOption === questions[currentQuestion].answer) {
-                score += 10; // Sahi jawab
+        function showFeedback(isCorrect, msg) {
+            const statusEl = document.getElementById("status-msg");
+            statusEl.style.color = isCorrect ? "#00ff41" : "#ff4b4b";
+            statusEl.innerText = msg;
+        }
+
+        function checkMCQ(selectedIndex) {
+            if (selectedIndex === gameQuestions[qIndex].ans) {
+                score += 10;
+                showFeedback(true, "Correct! +10");
+            } else {
+                showFeedback(false, "Wrong!");
             }
-            nextQuestion();
+            document.getElementById("score-display").innerText = "Score: " + score;
+            setTimeout(nextQuestion, 800);
+        }
+
+        function checkCodingAnswer() {
+            let userAns = document.getElementById("user-output").value.trim();
+            if (userAns === gameQuestions[qIndex].ans) {
+                score += 20;
+                showFeedback(true, "Correct Code! +20");
+            } else {
+                showFeedback(false, "Wrong! Ans: " + gameQuestions[qIndex].ans);
+            }
+            document.getElementById("score-display").innerText = "Score: " + score;
+            setTimeout(nextQuestion, 1500);
         }
 
         function nextQuestion() {
-            currentQuestion++;
+            qIndex++;
             loadQuestion();
         }
 
@@ -117,8 +304,9 @@
             document.getElementById("game-screen").classList.add("hidden");
             document.getElementById("result-screen").classList.remove("hidden");
             document.getElementById("final-score").innerText = score;
+            let msg = score > 30 ? "Outstanding! 🏆" : "Keep Practicing! 📚";
+            document.getElementById("feedback-msg").innerText = msg;
         }
-
     </script>
 </body>
 </html>
