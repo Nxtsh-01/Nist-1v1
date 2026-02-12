@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIST 1v1 - C Battle</title>
+    <style>
+        /* Ye Design Wala Part Hai (CSS) - Isko mat chedhna */
+        body { background-color: #121212; color: #00ff41; font-family: 'Courier New', monospace; text-align: center; padding: 50px; }
+        .box { border: 2px solid #00ff41; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 15px #00ff41; }
+        .btn { background: #00ff41; color: black; padding: 10px 20px; border: none; font-weight: bold; cursor: pointer; margin: 5px; font-size: 16px; }
+        .btn:hover { background: white; }
+        .hidden { display: none; }
+        #timer { font-size: 24px; color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>NIST 1v1: Code Battle</h1>
+    
+    <div id="login-screen" class="box">
+        <h3>Enter Player Name:</h3>
+        <input type="text" id="username" placeholder="Tera Naam..." style="padding:10px;">
+        <br><br>
+        <button class="btn" onclick="startGame()">START GAME</button>
+    </div>
+
+    <div id="game-screen" class="box hidden">
+        <p>Time Left: <span id="timer">10</span>s</p>
+        <h2 id="question-text">Question aayega yaha</h2>
+        <div id="options-container">
+            </div>
+    </div>
+
+    <div id="result-screen" class="box hidden">
+        <h2>Game Over!</h2>
+        <p>Tera Score: <span id="final-score">0</span></p>
+        <button class="btn" onclick="location.reload()">Play Again</button>
+    </div>
+
+    <script>
+        // --- YE HAI LOGIC PART (Bilkul C Jaisa) ---
+        
+        // C: int score = 0;
+        let score = 0;
+        let currentQuestion = 0;
+        let timer = 10;
+        let interval;
+
+        // Yahan apne questions daal (Format same rakhna)
+        const questions = [
+            {
+                q: "int x=5; printf('%d', x++); Output kya hoga?",
+                options: ["5", "6", "Garbage Value", "Error"],
+                answer: 0 // 0 matlab pehla option (5) sahi hai
+            },
+            {
+                q: "C language kisne banayi?",
+                options: ["Bjarne Stroustrup", "Dennis Ritchie", "Guido van Rossum", "James Gosling"],
+                answer: 1 // 1 matlab dusra option sahi hai
+            },
+            {
+                q: "int a=10; if(a=5) printf('Hi'); else printf('Bye');",
+                options: ["Hi", "Bye", "Error", "10"],
+                answer: 0 // Assignment operator returns true
+            }
+        ];
+
+        function startGame() {
+            // Screen change kar raha hu
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("game-screen").classList.remove("hidden");
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                endGame();
+                return;
+            }
+            
+            // Timer reset
+            timer = 10;
+            document.getElementById("timer").innerText = timer;
+            clearInterval(interval);
+            interval = setInterval(() => {
+                timer--;
+                document.getElementById("timer").innerText = timer;
+                if(timer <= 0) nextQuestion(false);
+            }, 1000);
+
+            // Question show kar raha hu
+            let q = questions[currentQuestion];
+            document.getElementById("question-text").innerText = q.q;
+            
+            let optionsHtml = "";
+            for(let i=0; i<q.options.length; i++) {
+                optionsHtml += `<button class='btn' onclick='checkAnswer(${i})'>${q.options[i]}</button><br>`;
+            }
+            document.getElementById("options-container").innerHTML = optionsHtml;
+        }
+
+        function checkAnswer(selectedOption) {
+            if (selectedOption === questions[currentQuestion].answer) {
+                score += 10; // Sahi jawab
+            }
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function endGame() {
+            clearInterval(interval);
+            document.getElementById("game-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            document.getElementById("final-score").innerText = score;
+        }
+
+    </script>
+</body>
+</html>
